@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/public/api/v1/")
 public class BookController {
@@ -67,12 +68,15 @@ public class BookController {
     }
 
     @DeleteMapping("books/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable(value = "id") Integer bookId) {
+    public Map deleteBook(@PathVariable(value = "id") Integer bookId) {
+        Map hashMap = new HashMap();
+
         Book findBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Books", "id", bookId));
 
         bookRepository.delete(findBook);
 
-        return ResponseEntity.ok().build();
+        hashMap.put("message", "Deleted successully");
+        return hashMap;
     }
 }

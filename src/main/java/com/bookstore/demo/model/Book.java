@@ -1,10 +1,14 @@
 package com.bookstore.demo.model;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "books")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
