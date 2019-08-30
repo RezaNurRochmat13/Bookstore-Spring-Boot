@@ -1,5 +1,6 @@
 package com.bookstore.demo.controller;
 
+import com.bookstore.demo.exception.ResourceNotFoundException;
 import com.bookstore.demo.model.User;
 import com.bookstore.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,40 @@ public class UserController {
 
         saveUserMap.put("message", "Berhasil simpan user");
         return saveUserMap;
+    }
+
+    @PutMapping("user/{idUser}")
+    public Map updateUser(@PathVariable(value = "idUser") Integer idUser,
+                          @Valid @RequestBody User userUpdatePayload) {
+        Map mapUpdateUser = new HashMap();
+
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id user", idUser));
+
+        user.setUserName(userUpdatePayload.getUserName());
+        user.setUserAddress(userUpdatePayload.getUserAddress());
+        user.setUserPhone(userUpdatePayload.getUserPhone());
+        user.setUserAge(userUpdatePayload.getUserAge());
+
+        User updateUser = userRepository.save(user);
+
+        mapUpdateUser.put("message", "Update user berhasil");
+        mapUpdateUser.put("updated_record", updateUser);
+
+        return mapUpdateUser;
+    }
+
+    @DeleteMapping("user/{idUser}")
+    public Map deleteUser(@PathVariable("idUser") Integer idUser) {
+        Map deleteUserMap = new HashMap();
+
+        User findUser = userRepository.findById(idUser)
+        .orElseThrow(() -> new ResourceNotFoundException("User", "id user", idUser));
+
+        userRepository.delete(findUser);
+
+        deleteUserMap.put("message", "User berhasil di delete");
+
+        return deleteUserMap;
     }
 }
